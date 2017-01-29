@@ -1,41 +1,29 @@
 package main
 
 import (
-	"fmt"
-	"io"
 	"net/http"
-	"os"
+
 	"github.com/labstack/echo"
 )
 
-func upload(c echo.Context) error {
-	form, err := c.MultipartForm()
+func cruncher(c echo.Context, glob *globals) error {
+	file, err := c.FormFile("file")
 	if err != nil {
-		return err
+		return throwHTTPError(c, badImageRequest, glob, "FILE_UPLOAD", err)
 	}
-	files := form.File["files"]
+	src, err := file.Open()
+	if err != nil {
+		return throwHTTPError(c, inputFileOpen, glob, "FILE_OPEN", err)
+	}
+	defer src.Close()
 
-	for _, file := range files {
-		// Source
-		src, err := file.Open()
-		if err != nil {
-			return err
-		}
-		defer src.Close()
+	imageType := guessImageMimeTypes(src)
+	allowedImages := []string{"image/jpeg", "image/png"}
+	isImageAllowed, _ := inArray(imageType, allowedImages)
 
-		// Destination
-		dst, err := os.Create(file.Filename)
-		if err != nil {
-			return err
-		}
-		defer dst.Close()
-
-		// Copy
-		if _, err = io.Copy(dst, src); err != nil {
-			return err
-		}
-
+	if isImageAllowed == false {
+		return throwHTTPError(c, invalidImageType, glob, "FILE_TYPE", err)
 	}
 
-	return c.HTML(http.StatusOK, fmt.Sprintf("<p>Uploaded successfully %d files with fields name=%s and email=%s.</p>", len(files), name, email))
+	return c.JSON(http.StatusBadRequest, err)
 }

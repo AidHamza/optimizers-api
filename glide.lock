@@ -1,5 +1,5 @@
-hash: bec7dc709ea720c6afe9ecceb86df859ff9c865037d35619be926e3ae2a2f615
-updated: 2017-01-16T23:13:24.739823448Z
+hash: f380a86831f547d43e43a0553d93e388c5db6bb9ec987c235f940aaf2d92c777
+updated: 2017-01-21T13:47:19.673214013Z
 imports:
 - name: github.com/dgrijalva/jwt-go
   version: a601269ab70c205d26370c16f7c81e9017c14e04
@@ -25,10 +25,17 @@ imports:
 - name: github.com/valyala/fasttemplate
   version: d090d65668a286d9a180d43a19dfdc5dcad8fe88
 - name: golang.org/x/crypto
-  version: 13d9f6188e639cb843a0568d05540a4cec71cc14
+  version: b8a2a83acfe6e6770b75de42d5ff4c67596675c0
   subpackages:
   - acme
   - acme/autocert
+- name: golang.org/x/image
+  version: 83686c547965220f8b5d75e83ddc67d73420a89f
+  subpackages:
+  - riff
+  - vp8
+  - vp8l
+  - webp
 - name: golang.org/x/net
   version: f2499483f923065a842d38eb4c7f1927e6fc6e6d
   subpackages:
@@ -38,4 +45,9 @@ imports:
   version: d75a52659825e75fff6158388dddc6a5b04f9ba5
   subpackages:
   - unix
+- name: gopkg.in/inconshreveable/log15.v2
+  version: b105bd37f74e5d9dc7b6ad7806715c7a2b83fd3f
+  subpackages:
+  - stack
+  - term
 testImports: []
