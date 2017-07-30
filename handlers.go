@@ -3,6 +3,7 @@ package main
 import (
 	"io"
 	"os"
+	"errors"
 
 	"github.com/labstack/echo"
 )
@@ -27,7 +28,7 @@ func cruncher(c echo.Context, glob *globals) error {
 	isImageAllowed, _ := inArray(imageType, allowedImages)
 
 	if isImageAllowed == false {
-		return throwHTTPError(c, invalidImageType, glob, "FILE_TYPE", err)
+		return throwHTTPError(c, invalidImageType, glob, "FILE_TYPE", errors.New("FILE_TYPE: invalid file type"))
 	}
 
 	fileSize, err := src.Seek(0, 2) //2 = from end
