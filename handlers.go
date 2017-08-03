@@ -31,13 +31,13 @@ func cruncher(c echo.Context, glob *globals) error {
 		return throwHTTPError(c, invalidImageType, glob, "FILE_TYPE", errors.New("FILE_TYPE: invalid file type"))
 	}
 
-	fileSize, err := src.Seek(0, 2) //2 = from end
+	fileSize, err := src.Seek(0, io.SeekEnd) //2 = from end
 	if err != nil {
 		return throwHTTPError(c, invalidImageType, glob, "FILE_GET_SIZE", err)
 	}
 
 	//Return to the head of the file
-	src.Seek(0, 0)
+	src.Seek(0, io.SeekStart)
 
 	//Process #4: Store + Queue for processing
 	dst, err := os.Create(uploadPath + file.Filename)
