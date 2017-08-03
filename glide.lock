@@ -1,5 +1,5 @@
-hash: f380a86831f547d43e43a0553d93e388c5db6bb9ec987c235f940aaf2d92c777
-updated: 2017-01-21T13:47:19.673214013Z
+hash: 876ca049d1e8c729f3cef43ce6ea8c1229d8df149fdef9c8a27b211dce42554d
+updated: 2017-08-03T11:23:59.177325612+01:00
 imports:
 - name: github.com/dgrijalva/jwt-go
   version: a601269ab70c205d26370c16f7c81e9017c14e04
@@ -18,6 +18,8 @@ imports:
   version: d228849504861217f796da67fae4f6e347643f15
 - name: github.com/mattn/go-isatty
   version: 30a891c33c7cde7b02a981314b4228ec99380cca
+- name: github.com/minio/minio-go
+  version: 5ca66c9a35ba1cd674484be99dc97aa0973afe12
 - name: github.com/tylerb/graceful
   version: 0e9129e9c6d47da90dc0c188b26bd7bb1dab53cd
 - name: github.com/valyala/bytebufferpool
@@ -25,7 +27,7 @@ imports:
 - name: github.com/valyala/fasttemplate
   version: d090d65668a286d9a180d43a19dfdc5dcad8fe88
 - name: golang.org/x/crypto
-  version: b8a2a83acfe6e6770b75de42d5ff4c67596675c0
+  version: 4cd25d65a015cc83d41bf3454e6e8d6c116d16da
   subpackages:
   - acme
   - acme/autocert
@@ -37,12 +39,12 @@ imports:
   - vp8l
   - webp
 - name: golang.org/x/net
-  version: f2499483f923065a842d38eb4c7f1927e6fc6e6d
+  version: a6577fac2d73be281a500b310739095313165611
   subpackages:
   - context
   - context/ctxhttp
 - name: golang.org/x/sys
-  version: d75a52659825e75fff6158388dddc6a5b04f9ba5
+  version: 493114f68206f85e7e333beccfabc11e98cba8dd
   subpackages:
   - unix
 - name: gopkg.in/inconshreveable/log15.v2

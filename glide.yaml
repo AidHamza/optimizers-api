@@ -7,3 +7,5 @@ import:
   - webp
 - package: gopkg.in/inconshreveable/log15.v2
   version: ^2.11.0
+- package: github.com/minio/minio-go
+  version: ^3.0.0
