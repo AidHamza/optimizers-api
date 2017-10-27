@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/labstack/echo"
+	"github.com/AidHamza/optimizers-api/log"
 )
 
 type httpError struct {
@@ -22,7 +23,7 @@ func getError(errorCode int) *httpError {
 	}
 }
 
-func throwHTTPError(c echo.Context, errorCode int, glob *globals, errContext string, appError error) error {
-	glob.Log.Error(getErrorText(errorCode), errContext, appError.Error())
+func throwHTTPError(c echo.Context, errorCode int, errContext string, appError error) error {
+	log.Logger.Error(getErrorText(errorCode), errContext, appError.Error())
 	return c.JSON(errorHTTP[errorCode], getError(errorCode))
 }

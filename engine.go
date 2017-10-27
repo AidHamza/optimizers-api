@@ -2,19 +2,18 @@ package main
 
 import (
 	"bytes"
-	"fmt"
-	"os"
 	"os/exec"
 	"strings"
+	"github.com/AidHamza/optimizers-api/log"
 )
 
 func printCommand(cmd *exec.Cmd) {
-	fmt.Printf("==> Executing: %s\n", strings.Join(cmd.Args, " "))
+	log.Logger.Info("Executing Command", "ARGS", strings.Join(cmd.Args, " "))
 }
 
 func printError(err error) {
 	if err != nil {
-		os.Stderr.WriteString(fmt.Sprintf("==> Error: %s\n", err.Error()))
+		log.Logger.Error("Executing Command", "ARGS", err.Error())
 	}
 }
 

@@ -2,23 +2,24 @@ package main
 
 import (
 	"io"
-	"os"
 	"errors"
 
 	"github.com/labstack/echo"
+	"github.com/AidHamza/optimizers-api/storage"
+	"github.com/AidHamza/optimizers-api/messaging"
 )
 
-func cruncher(c echo.Context, glob *globals) error {
+func cruncher(c echo.Context) error {
 	//Process #1: Welcome the file
 	file, err := c.FormFile("file")
 	if err != nil {
-		return throwHTTPError(c, badImageRequest, glob, "FILE_UPLOAD", err)
+		return throwHTTPError(c, badImageRequest, "FILE_UPLOAD", err)
 	}
 
 	//Process #2: Store the bytes into src
 	src, err := file.Open()
 	if err != nil {
-		return throwHTTPError(c, inputFileOpen, glob, "FILE_OPEN", err)
+		return throwHTTPError(c, inputFileOpen, "FILE_OPEN", err)
 	}
 	defer src.Close()
 
@@ -28,34 +29,37 @@ func cruncher(c echo.Context, glob *globals) error {
 	isImageAllowed, _ := inArray(imageType, allowedImages)
 
 	if isImageAllowed == false {
-		return throwHTTPError(c, invalidImageType, glob, "FILE_TYPE", errors.New("FILE_TYPE: invalid file type"))
+		return throwHTTPError(c, invalidImageType, "FILE_TYPE", errors.New("FILE_TYPE: invalid file type"))
 	}
 
 	fileSize, err := src.Seek(0, io.SeekEnd) //2 = from end
 	if err != nil {
-		return throwHTTPError(c, invalidImageType, glob, "FILE_GET_SIZE", err)
+		return throwHTTPError(c, invalidImageType, "FILE_GET_SIZE", err)
 	}
 
 	//Return to the head of the file
 	src.Seek(0, io.SeekStart)
 
-	//Process #4: Store + Queue for processing
-	dst, err := os.Create(uploadPath + file.Filename)
+	//Process #4: Queue for processing
+	err = storage.PutObject(src, file.Filename, imageType)
 	if err != nil {
-		return throwHTTPError(c, failedSaveFile, glob, "FILE_TMP_SAVE", err)
-	}
-	defer dst.Close()
-
-	if _, err = io.Copy(dst, src); err != nil {
-		return throwHTTPError(c, failedCopyFile, glob, "FILE_COPY", err)
+		return throwHTTPError(c, failedStoreFile, "FILE_STORAGE_FAILED", err)
 	}
 
-	compressOutput := compressImage(file.Filename, imageType)
+	producer, err := messaging.NewProducer()
+	if err != nil {
+		return throwHTTPError(c, failedQueueFile, "OP_QUEUE_FAILED", err)
+	}
+
+	err = producer.PublishMessage("jpeg", file.Filename)
+	if err != nil {
+		return throwHTTPError(c, failedQueueFile, "OP_QUEUE_PUBLISH_FAILED", err)
+	}
+
 
 	result := &compressSuccess{
 		Filename: file.Filename,
 		Size:     fileSize,
-		Output:   compressOutput,
 	}
 
 	return c.JSON(200, result)

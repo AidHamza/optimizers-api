@@ -1,4 +1,4 @@
-package main
+package log
 
 import (
 	"strings"
@@ -15,6 +15,12 @@ const (
 	//debug, info, warn, error, crit
 	logLevel = "debug"
 )
+
+var Logger = log.New()
+
+func init() {
+	initLogger()
+}
 
 func initLogger() {
 

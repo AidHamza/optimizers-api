@@ -1,5 +1,15 @@
 version: '2'
 services:
+  minio:
+    image: minio/minio
+    command: server /data
+    volumes:
+      - minio-data:/data
+    environment:
+      MINIO_ACCESS_KEY: OPTIMIZERS_KEY
+      MINIO_SECRET_KEY: OPTIMIZERS_SECRET
+    ports:
+      - "9000:9000"
   nsqlookupd:
     image: nsqio/nsq
     command: /nsqlookupd
@@ -17,3 +27,6 @@ services:
     command: /nsqadmin --lookupd-http-address=nsqlookupd:4161
     ports:
       - "4171"
+
+volumes:
+  minio-data:

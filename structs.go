@@ -1,16 +1,8 @@
 package main
 
-import "gopkg.in/inconshreveable/log15.v2"
-
-type globals struct {
-	Name string
-	Log  log15.Logger
-}
-
 type compressSuccess struct {
 	Filename string `json:"file"`
 	Size     int64  `json:"size"`
-	Output   string `json:"output"`
 }
 
 const (
@@ -20,6 +12,8 @@ const (
 	failedSaveFile   = 103
 	failedCopyFile   = 104
 	failedFileInfo   = 105
+	failedStoreFile  = 106
+	failedQueueFile  = 107
 
 	//Some settings
 	uploadPath   = "./uploads/"
@@ -33,6 +27,8 @@ var errorText = map[int]string{
 	failedSaveFile:   "Failed to save the temporary file",
 	failedCopyFile:   "Failed to copy the file",
 	failedFileInfo:   "Failed to get the file info",
+	failedStoreFile:   "Failed to store the file in Bucket",
+	failedQueueFile:   "Failed to queue the file operation in messaging center",
 }
 
 var errorHTTP = map[int]int{
@@ -42,4 +38,6 @@ var errorHTTP = map[int]int{
 	failedSaveFile:   500,
 	failedCopyFile:   500,
 	failedFileInfo:   500,
+	failedStoreFile:  500,
+	failedQueueFile:  500,
 }

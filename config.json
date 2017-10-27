@@ -1,0 +1,14 @@
+{
+	"Port": 8080,
+	"Storage": {
+		"Host": "127.0.0.1",
+		"Port": 9000,
+		"AccessKey": "OPTIMIZERS_KEY",
+		"SecretKey": "OPTIMIZERS_SECRET",
+		"TLS": false
+	},
+	"Messaging": {
+		"Host": "127.0.0.1",
+		"Port": 32769
+	}
+}
