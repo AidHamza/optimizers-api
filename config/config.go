@@ -4,8 +4,8 @@ import (
 	"github.com/spf13/viper"
 )
 
-type AppConfig struct {
-	Port int
+type Config struct {
+	Service appConfig
 	Messaging nsqConfig
 	Storage s3Config
 }
@@ -23,9 +23,14 @@ type nsqConfig struct {
 	Port int
 }
 
-var App AppConfig
+type appConfig struct {
+	Port string
+	CrossOrigin string
+}
 
-func (config *AppConfig) Init() error {
+var App Config
+
+func (config *Config) Init() error {
 	viper := viper.New()
 	viper.SetConfigName("config")
 	viper.AddConfigPath("./")
@@ -35,7 +40,8 @@ func (config *AppConfig) Init() error {
 		return err
 	}
 
-	config.Port = viper.GetInt("Port")
+	config.Service.Port = viper.GetString("Service.Port")
+	config.Service.CrossOrigin = viper.GetString("Service.CrossOrigin")
 
 	config.Messaging.Host = viper.GetString("Messaging.Host")
 	config.Messaging.Port = viper.GetInt("Messaging.Port")

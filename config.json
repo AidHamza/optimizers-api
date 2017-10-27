@@ -1,5 +1,8 @@
 {
-	"Port": 8080,
+	"Service": {
+		"Port": "8080",
+		"CrossOrigin": "http://localhost:4200"
+	},
 	"Storage": {
 		"Host": "127.0.0.1",
 		"Port": 9000,
