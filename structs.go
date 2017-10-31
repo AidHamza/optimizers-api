@@ -3,6 +3,7 @@ package main
 type compressSuccess struct {
 	Filename string `json:"file"`
 	Size     int64  `json:"size"`
+	Id     uint64  `json:"id"`
 }
 
 const (

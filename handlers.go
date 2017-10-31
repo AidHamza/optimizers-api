@@ -7,6 +7,9 @@ import (
 	"github.com/labstack/echo"
 	"github.com/AidHamza/optimizers-api/storage"
 	"github.com/AidHamza/optimizers-api/messaging"
+
+	"github.com/AidHamza/optimizers-api/pkg/helpers"
+	op "github.com/AidHamza/optimizers-api/pkg/operation"
 )
 
 func cruncher(c echo.Context) error {
@@ -26,7 +29,7 @@ func cruncher(c echo.Context) error {
 	//Process #3: Try to guess the type and reject if not acceptable
 	imageType := guessImageMimeTypes(src)
 	allowedImages := []string{"image/jpeg", "image/png"}
-	isImageAllowed, _ := inArray(imageType, allowedImages)
+	isImageAllowed, _ := helpers.InArray(imageType, allowedImages)
 
 	if isImageAllowed == false {
 		return throwHTTPError(c, invalidImageType, "FILE_TYPE", errors.New("FILE_TYPE: invalid file type"))
@@ -50,8 +53,18 @@ func cruncher(c echo.Context) error {
 	if err != nil {
 		return throwHTTPError(c, failedQueueFile, "OP_QUEUE_FAILED", err)
 	}
+	
+	operation, opId, err := op.NewOperation(file.Filename, imageType)
+	if err != nil {
+		return throwHTTPError(c, failedQueueFile, "OP_QUEUE_FAILED", err)
+	}
 
-	err = producer.PublishMessage("jpeg", file.Filename)
+	var topicName string = "jpeg"
+	if imageType == "image/png" {
+		topicName = "png"
+	}
+
+	err = producer.PublishMessage(topicName, operation)
 	if err != nil {
 		return throwHTTPError(c, failedQueueFile, "OP_QUEUE_PUBLISH_FAILED", err)
 	}
@@ -60,6 +73,7 @@ func cruncher(c echo.Context) error {
 	result := &compressSuccess{
 		Filename: file.Filename,
 		Size:     fileSize,
+		Id:     opId,
 	}
 
 	return c.JSON(200, result)

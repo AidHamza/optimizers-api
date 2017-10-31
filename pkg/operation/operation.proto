@@ -18,7 +18,7 @@ on file and bellow the example how to exploit it
 	fmt.Printf("ProtoBuf Example : %+v", out)
 */
 message Operation {
-	int32 id = 1;
+	uint64 id = 1;
 	string file = 2;
 
 	// FileType detected from API
@@ -32,7 +32,7 @@ message Operation {
 	// Command to perform on the file
 	message Command {
 		string command = 1;
-		string flags = 2;
+		repeated string flags = 2;
 	}
 	repeated Command command = 4;
 }
