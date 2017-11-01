@@ -35,6 +35,11 @@ func cruncher(c echo.Context) error {
 		return throwHTTPError(c, invalidImageType, "FILE_TYPE", errors.New("FILE_TYPE: invalid file type"))
 	}
 
+	var imageBucket string = "jpeg"
+	if imageType == "image/png" {
+		imageBucket = "png"
+	}
+
 	fileSize, err := src.Seek(0, io.SeekEnd) //2 = from end
 	if err != nil {
 		return throwHTTPError(c, invalidImageType, "FILE_GET_SIZE", err)
@@ -44,7 +49,7 @@ func cruncher(c echo.Context) error {
 	src.Seek(0, io.SeekStart)
 
 	//Process #4: Queue for processing
-	err = storage.PutObject(src, file.Filename, imageType)
+	err = storage.PutObject(src, imageBucket, file.Filename, imageType)
 	if err != nil {
 		return throwHTTPError(c, failedStoreFile, "FILE_STORAGE_FAILED", err)
 	}
@@ -59,12 +64,7 @@ func cruncher(c echo.Context) error {
 		return throwHTTPError(c, failedQueueFile, "OP_QUEUE_FAILED", err)
 	}
 
-	var topicName string = "jpeg"
-	if imageType == "image/png" {
-		topicName = "png"
-	}
-
-	err = producer.PublishMessage(topicName, operation)
+	err = producer.PublishMessage(imageBucket, operation)
 	if err != nil {
 		return throwHTTPError(c, failedQueueFile, "OP_QUEUE_PUBLISH_FAILED", err)
 	}

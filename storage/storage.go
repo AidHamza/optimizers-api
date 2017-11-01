@@ -8,7 +8,7 @@ import (
 	"github.com/AidHamza/optimizers-api/log"
 )
 
-func PutObject(fileReader io.Reader, fileName string, fileType string) error {
+func PutObject(fileReader io.Reader, bucket string, fileName string, fileType string) error {
 	s3Client, err := minio.New(
 		fmt.Sprintf("%s:%d", config.App.Storage.Host, config.App.Storage.Port),
 		config.App.Storage.AccessKey,
@@ -19,7 +19,7 @@ func PutObject(fileReader io.Reader, fileName string, fileType string) error {
 		return err
 	}
 
-	n, err := s3Client.PutObject("jpeg", fileName, fileReader, fileType)
+	n, err := s3Client.PutObject(bucket, fileName, fileReader, fileType)
 	if err != nil {
 		return err
 	}

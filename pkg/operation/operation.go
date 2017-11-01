@@ -13,6 +13,7 @@ func NewOperation(fileName string, fileType string) ([]byte, uint64, error) {
 
 	if fileType == "image/jpeg" {
 		operation.Type = Operation_JPEG
+		// TODO: use mozjpeg instead for better results, but slow
 		operation.Command = []*Operation_Command{
 			{
 				Command: "jpegoptim",
@@ -20,6 +21,7 @@ func NewOperation(fileName string, fileType string) ([]byte, uint64, error) {
 			},
 		};
 	} else {
+		//TODO: use pngquant and pngout instead, Check github.com/alexanderteves/pngo
 		operation.Type = Operation_PNG
 		operation.Command = []*Operation_Command{
 			{
