@@ -2,6 +2,7 @@ version: '2'
 services:
   minio:
     image: minio/minio
+    restart: always
     command: server /data
     volumes:
       - minio-data:/data
@@ -12,18 +13,21 @@ services:
       - "9000:9000"
   nsqlookupd:
     image: nsqio/nsq
+    restart: always
     command: /nsqlookupd
     ports:
       - "4160"
       - "4161"
   nsqd:
     image: nsqio/nsq
+    restart: always
     command: /nsqd --lookupd-tcp-address=nsqlookupd:4160
     ports:
       - "4150"
       - "4151"
   nsqadmin:
     image: nsqio/nsq
+    restart: always
     command: /nsqadmin --lookupd-http-address=nsqlookupd:4161
     ports:
       - "4171"
