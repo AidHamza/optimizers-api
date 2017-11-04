@@ -2,7 +2,7 @@ package log
 
 import (
 	"strings"
-
+	"log/syslog"
 	log "gopkg.in/inconshreveable/log15.v2"
 )
 
@@ -51,7 +51,7 @@ func initLogger() {
 		}
 	} else if strings.HasPrefix(logDest, "syslog") {
 		if strings.HasPrefix(logDest, "syslog://local/") {
-			handler, err = log.SyslogHandler(strings.TrimPrefix(logDest, "syslog://local/"), format)
+			handler, err = log.SyslogHandler(syslog.LOG_DEBUG, strings.TrimPrefix(logDest, "syslog://local/"), format)
 			if err != nil {
 				log.Crit("Can't parse syslog string", "err", err.Error(), "value", logDest)
 				panic("Log setup error")
@@ -59,7 +59,7 @@ func initLogger() {
 		} else {
 			connstring := strings.Split(strings.TrimPrefix(logDest, "syslog://"), "/")
 			addr, tag := connstring[0], connstring[1]
-			handler, err = log.SyslogNetHandler("udp", addr, tag, format)
+			handler, err = log.SyslogNetHandler("udp", addr, syslog.LOG_DEBUG, tag, format)
 			if err != nil {
 				log.Crit("Can't parse syslog string", "err", err.Error(), "value", logDest)
 				panic("Log setup error")

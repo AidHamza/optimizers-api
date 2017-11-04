@@ -22,8 +22,8 @@ func NewProducer() (*Producer, error) {
 	}, nil
 }
 
-func (producer *Producer) PublishMessage(topic string, message []byte) error {
-	err := producer.nsq.Publish(topic, message)
+func (producer *Producer) PublishMessage(message []byte) error {
+	err := producer.nsq.Publish(config.App.Messaging.Topic, message)
 	if err != nil {
 		return err
 	}

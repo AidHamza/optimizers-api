@@ -2,6 +2,7 @@ package main
 
 import (
 	"io"
+	"fmt"
 	"errors"
 
 	"github.com/labstack/echo"
@@ -48,8 +49,12 @@ func cruncher(c echo.Context) error {
 	//Return to the head of the file
 	src.Seek(0, io.SeekStart)
 
+	// Generate an Unique Operation ID
+	opId := helpers.RandomID()
+	fileName := fmt.Sprintf("%d/%s", opId, file.Filename)
+
 	//Process #4: Queue for processing
-	err = storage.PutObject(src, imageBucket, file.Filename, imageType)
+	err = storage.PutObject(src, imageBucket, fileName, imageType)
 	if err != nil {
 		return throwHTTPError(c, failedStoreFile, "FILE_STORAGE_FAILED", err)
 	}
@@ -59,12 +64,12 @@ func cruncher(c echo.Context) error {
 		return throwHTTPError(c, failedQueueFile, "OP_QUEUE_FAILED", err)
 	}
 	
-	operation, opId, err := op.NewOperation(file.Filename, imageType)
+	operation, err := op.NewOperation(opId, file.Filename, imageType)
 	if err != nil {
 		return throwHTTPError(c, failedQueueFile, "OP_QUEUE_FAILED", err)
 	}
 
-	err = producer.PublishMessage(imageBucket, operation)
+	err = producer.PublishMessage(operation)
 	if err != nil {
 		return throwHTTPError(c, failedQueueFile, "OP_QUEUE_PUBLISH_FAILED", err)
 	}

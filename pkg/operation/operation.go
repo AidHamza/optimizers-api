@@ -1,13 +1,12 @@
 package operation
 
 import (
-	"github.com/AidHamza/optimizers-api/pkg/helpers"
 	proto "github.com/golang/protobuf/proto"
 )
 
-func NewOperation(fileName string, fileType string) ([]byte, uint64, error) {
+func NewOperation(opId uint64, fileName string, fileType string) ([]byte, error) {
 	operation := &Operation{
-		Id: helpers.RandomID(),
+		Id: opId,
 		File: fileName,
 	}
 
@@ -17,7 +16,7 @@ func NewOperation(fileName string, fileType string) ([]byte, uint64, error) {
 		operation.Command = []*Operation_Command{
 			{
 				Command: "jpegoptim",
-				Flags: []string{"-s", "--max=80", "--dest=", "DEST", "SOURCE"},
+				Flags: []string{"-s", "--max=80", "--stdout", "--stdin"},
 			},
 		};
 	} else {
@@ -25,16 +24,16 @@ func NewOperation(fileName string, fileType string) ([]byte, uint64, error) {
 		operation.Type = Operation_PNG
 		operation.Command = []*Operation_Command{
 			{
-				Command: "optipng",
-				Flags: []string{"-o2", "SOURCE", "-out", "DEST"},
+				Command: "pngquant",
+				Flags: []string{"--strip", "--quality=65-80", "-"},
 			},
 		};
 	}
 
 	operationBytes, err := proto.Marshal(operation)
 	if err != nil {
-		return []byte{0}, 0, err
+		return []byte{0}, err
 	}
 
-	return operationBytes, operation.Id, nil
+	return operationBytes, nil
 }

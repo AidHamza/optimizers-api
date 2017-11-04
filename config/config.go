@@ -21,6 +21,7 @@ type s3Config struct {
 type nsqConfig struct {
 	Host string
 	Port int
+	Topic string
 }
 
 type appConfig struct {
@@ -45,6 +46,7 @@ func (config *Config) Init() error {
 
 	config.Messaging.Host = viper.GetString("Messaging.Host")
 	config.Messaging.Port = viper.GetInt("Messaging.Port")
+	config.Messaging.Topic = viper.GetString("Messaging.Topic")
 
 	config.Storage.Host = viper.GetString("Storage.Host")
 	config.Storage.Port = viper.GetInt("Storage.Port")
